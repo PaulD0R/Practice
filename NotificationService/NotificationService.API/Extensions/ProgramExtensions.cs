@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -7,9 +9,9 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using NotificationService.Application.Commands.AddNotification;
 using NotificationService.Application.Interfaces.Messages;
 using NotificationService.Application.Interfaces.Repositories;
-using NotificationService.Application.Interfaces.Services;
 using NotificationService.Domain.Enums;
 using NotificationService.Infrastructure.BackgroundServices;
 using NotificationService.Infrastructure.Context;
@@ -25,8 +27,10 @@ public static class ProgramExtensions
     {
         public IServiceCollection AddInfrastructureStorage(IConfiguration configuration)
         {
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("Postgres")));
+            services.AddDbContext<WriteDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("WritePostgres")));
+            services.AddDbContext<ReadDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("ReadPostgres")));
 
             services.AddSingleton<IMongoClient>(_ => 
                 new MongoClient(configuration.GetConnectionString("Mongo")));
@@ -34,7 +38,8 @@ public static class ProgramExtensions
             
             services.Configure<MongoOptions>(configuration.GetSection("Mongo"));
 
-            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<INotificationWriteRepository, NotificationWriteRepository>();
+            services.AddScoped<INotificationReadRepository, NotificationReadRepository>();
             services.AddScoped<IArchiveRepository, ArchiveRepository>();
 
             return services;
@@ -61,8 +66,11 @@ public static class ProgramExtensions
 
         public IServiceCollection AddApplicationServices(IConfiguration configuration)
         {
-            services.AddScoped<INotificationService, Application.Services.NotificationService>();
-
+            services.AddMediatR(cfg => 
+            {
+                cfg.RegisterServicesFromAssembly(typeof(AddNotificationCommand).Assembly);
+            });
+            
             services.Configure<ArchiveOptions>(configuration.GetSection("Archive"));
             services.AddHostedService<ArchiveBackgroundService>();
 
@@ -118,6 +126,24 @@ public static class ProgramExtensions
                     [new OpenApiSecuritySchemeReference("bearer", document)] = []
                 });
 
+            });
+
+            return services;
+        }
+
+        public IServiceCollection AddRequestLimit()
+        {
+            services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("NotificationPolicy", fixedOptions =>
+                {
+                    fixedOptions.PermitLimit = 10;           
+                    fixedOptions.Window = TimeSpan.FromSeconds(10); 
+                    fixedOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    fixedOptions.QueueLimit = 5;           
+                });
+
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             });
 
             return services;

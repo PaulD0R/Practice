@@ -3,24 +3,20 @@ using NotificationService.Domain.Models;
 
 namespace NotificationService.Infrastructure.Context;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class WriteDbContext(DbContextOptions<WriteDbContext> options) : DbContext(options)
 {
-    public DbSet<Notification>  Notifications { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Notification>()
-            .Property(n => n.EmailStatus)
+            .Property(n => n.Status)
             .HasConversion<string>();
-
+        
         modelBuilder.Entity<Notification>()
-            .Property(n => n.SmsStatus)
-            .HasConversion<string>();
-
-        modelBuilder.Entity<Notification>()
-            .Property(n => n.PushStatus)
+            .Property(n => n.Channel)
             .HasConversion<string>();
     }
 }
