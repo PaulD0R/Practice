@@ -1,0 +1,75 @@
+﻿version: '3.8'
+
+services:
+  notificationservice.api:
+    image: notificationservice.api
+    container_name: notification-api
+    build:
+      context: .
+      dockerfile: NotificationService.API/Dockerfile
+    ports:
+      - "8080:8080" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__WritePostgres=Host=write-notification-postgres;Port=5432;Database=write_notification_db;Username=postgres;Password=abcdefg123;
+      - ConnectionStrings__ReadPostgres=Host=read-notification-postgres;Port=5432;Database=read_notification_db;Username=postgres;Password=abcdefg123;
+      - ConnectionStrings__Mongo=mongodb://mongo:27017
+      - Kafka__CreateNotificationEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__ErrorEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__ApproveEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__SendEmailEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__SendSmsEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__SendPushEvent__BootstrapServers=kafka-notification:9092
+    depends_on:
+      - write-notification-postgres
+      - read-notification-postgres
+      - mongo-notification
+    networks:
+      - notification-network
+
+  write-notification-postgres:
+    image: postgres:16
+    container_name: write-notification-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: abcdefg123
+      POSTGRES_DB: write_notification_db
+    volumes:
+      - write_postgres_data:/var/lib/postgresql/data
+      - ./Databases/write_init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - notification-network
+
+  read-notification-postgres:
+    image: postgres:16
+    container_name: read-notification-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: abcdefg123
+      POSTGRES_DB: read_notification_db
+    volumes:
+      - read_postgres_data:/var/lib/postgresql/data
+      - ./Databases/read_init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - notification-network
+
+  mongo-notification:
+    image: mongo:latest
+    container_name: mongo-notification
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - notification-network
+
+volumes:
+  write_postgres_data:
+  read_postgres_data:
+  mongo_data:
+  kafka_data:
+    
+networks:
+  notification-network:
+    external: true

@@ -1,3 +1,3 @@
 namespace NotificationService.Application.Events.Push;
 
-public record SendPushEvent(string Text);
+public record SendPushEvent(string Address, string Text);

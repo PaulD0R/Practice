@@ -8,22 +8,22 @@ using NotificationService.Domain.Enums;
 
 namespace NotificationService.Infrastructure.Kafka.Handlers;
 
-public class ErrorEventHandler(
+public class ApproveEventHandler(
     IServiceScopeFactory scopeFactory, 
     ILogger<ErrorEventHandler> logger)
-    : IMessageHandler<ErrorEvent>
+    : IMessageHandler<ApproveEvent>
 {
-    public async Task HandleAsync(ErrorEvent message, CancellationToken token = default)
+    public async Task HandleAsync(ApproveEvent message, CancellationToken token = default)
     {
         try
         {
             using var scope = scopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-            await mediator.Send(new SetStatusNotificationCommand(message.NotificationId, NotificationStatus.Failed), token);
+            await mediator.Send(new SetStatusNotificationCommand(message.NotificationId, NotificationStatus.Approve), token);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to update error status for notification {NotificationId}", message.NotificationId);
+            logger.LogError(e, "Failed to update approve status for notification {NotificationId}", message.NotificationId);
             throw; 
         }
     }

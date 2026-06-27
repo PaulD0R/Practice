@@ -2,7 +2,7 @@ namespace NotificationService.Domain.Enums;
 
 public enum NotificationStatus
 {
-    None = 0,
-    Sent = 1,
+    Sent = 0,
+    Approve = 1,
     Failed = 2
 }

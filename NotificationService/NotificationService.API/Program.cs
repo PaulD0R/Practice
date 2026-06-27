@@ -1,9 +1,11 @@
 using NotificationService.API.Exceptions;
 using NotificationService.API.Extensions;
+using NotificationService.Application.Events;
 using NotificationService.Application.Events.Email;
 using NotificationService.Application.Events.Push;
 using NotificationService.Application.Events.Sms;
 using NotificationService.Infrastructure.Kafka.Handlers;
+using ErrorEventHandler = NotificationService.Infrastructure.Kafka.Handlers.ErrorEventHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,19 +17,19 @@ builder.Services
     .AddSwaggerWithSecurity()
     .AddInfrastructureStorage(builder.Configuration)
     .AddJwtAuthentication(builder.Configuration)
-    .AddApplicationServices(builder.Configuration);
+    .AddApplicationServices(builder.Configuration)
+    .AddRequestLimit();
 
 builder.Services.AddKafkaProducer<SendEmailEvent>(builder.Configuration.GetSection("Kafka:SendEmailEvent"))
     .AddKafkaProducer<SendSmsEvent>(builder.Configuration.GetSection("Kafka:SendSmsEvent"))
-    .AddKafkaProducer<SendPushEvent>(builder.Configuration.GetSection("Kafka:SendPushEvent"));
+    .AddKafkaProducer<SendPushEvent>(builder.Configuration.GetSection("Kafka:SendPushEvent"))
+    .AddKafkaProducer<CreateNotificationEvent>(builder.Configuration.GetSection("Kafka:CreateNotificationEvent"));
 
 builder.Services
-    .AddKafkaConsumer<EmailErrorEvent,
-        ErrorEventHandler<EmailErrorEvent>>(builder.Configuration.GetSection("Kafka:EmailErrorEvent"))
-    .AddKafkaConsumer<SmsErrorEvent,
-        ErrorEventHandler<SmsErrorEvent>>(builder.Configuration.GetSection("Kafka:SmsErrorEvent"))
-    .AddKafkaConsumer<PushErrorEvent, ErrorEventHandler<PushErrorEvent>>(
-        builder.Configuration.GetSection("Kafka:PushErrorEvent"));
+    .AddKafkaConsumer<ErrorEvent, ErrorEventHandler>(builder.Configuration.GetSection("Kafka:ErrorEvent"))
+    .AddKafkaConsumer<ApproveEvent, ApproveEventHandler>(builder.Configuration.GetSection("Kafka:ApproveEvent"))
+    .AddKafkaConsumer<CreateNotificationEvent, CreateNotificationEventHandler>(
+        builder.Configuration.GetSection("Kafka:CreateNotificationEvent")); 
  
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -37,6 +39,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseExceptionHandler();
+app.UseRouting();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

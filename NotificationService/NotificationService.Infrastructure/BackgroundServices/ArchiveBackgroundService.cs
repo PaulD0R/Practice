@@ -1,8 +1,9 @@
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NotificationService.Application.Interfaces.Services;
+using NotificationService.Application.Commands.Archive;
 using NotificationService.Infrastructure.Options;
 
 namespace NotificationService.Infrastructure.BackgroundServices;
@@ -22,11 +23,10 @@ public class ArchiveBackgroundService(
             try
             {
                 logger.LogInformation("Starting archiving task");
-
-                using var scope = scopeFactory.CreateScope();
-                var service = scope.ServiceProvider.GetRequiredService<INotificationService>();
                 
-                await service.ArchiveAsync(options.CurrentValue.DayCount);
+                using var scope = scopeFactory.CreateScope();
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                await mediator.Send(new ArchiveCommand(options.CurrentValue.DayCount), stoppingToken);
                 
                 logger.LogInformation("Daily archiving task finished successfully");
             }

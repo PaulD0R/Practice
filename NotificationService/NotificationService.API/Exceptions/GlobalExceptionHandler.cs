@@ -15,6 +15,7 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         var status = exception switch
         {
+            BadRequestException => (int)HttpStatusCode.BadRequest,
             InternalServerException => (int)HttpStatusCode.InternalServerError,
             _ => (int)HttpStatusCode.InternalServerError
         };

@@ -1,19 +1,31 @@
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NotificationService.Application.DTOs;
-using NotificationService.Application.Interfaces.Services;
+using Microsoft.AspNetCore.RateLimiting;
+using NotificationService.Application.Commands.AddNotification;
+using NotificationService.Application.Queries.GetNotifications;
 
 namespace NotificationService.API.Controllers;
 
 [ApiController]
-[Route("api/v1.0.0/notifications")]
-public class NotificationController(INotificationService notificationService) : ControllerBase
+[Authorize]
+[EnableRateLimiting("NotificationPolicy")]
+[Route("api/notifications")]
+public class NotificationController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> SendNotification([FromBody] NotificationRequest request)
+    public async Task<IActionResult> SendNotification([FromBody] AddNotificationCommand command)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         
-        await notificationService.SendNotificationAsync(request);
-        return Ok();
+        await mediator.Send(command);
+        return Created();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetNotifications()
+    {
+        var notifications = await mediator.Send(new GetNotificationsQuery());
+        return Ok(notifications);
     }
 }
