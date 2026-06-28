@@ -43,7 +43,6 @@ public class AddNotificationHandler(
                 if (!Regex.IsMatch(request.Address, emailPattern))
                     throw new BadRequestException("Invalid email");
                 break;
-            
             case NotificationChannel.Sms:
                 var phonePattern = @"^\+\d{1,4}[-.\s]?\(?\d{1,3}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$";
                 if (!Regex.IsMatch(request.Address, phonePattern))

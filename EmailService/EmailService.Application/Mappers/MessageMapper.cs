@@ -8,11 +8,9 @@ public static class MessageMapper
     public static EmailMessage ToEmailMessage(this SendEmailEvent message) =>
         new()
         {
-            Id = message.MessageId,
-            Name = message.Name,
-            Email = message.Email,
-            Body = message.Body,
-            Subject = message.Subject,
+            Id = message.NotificationId,
+            Email = message.Address,
+            Body = message.Text
         };
 
     public static ApproveEmailEvent ToApproveMessageEvent(this EmailMessage message) =>

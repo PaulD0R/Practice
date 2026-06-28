@@ -1,13 +1,15 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using NotificationService.Application.Events;
+using NotificationService.Application.Interfaces.Messages;
 using NotificationService.Application.Interfaces.Repositories;
-using NotificationService.Domain.Enums;
 
 namespace NotificationService.Application.Commands.SetStatusNotification;
 
-public class ApproveNotificationHandler(
+public class SetStatusNotificationHandler(
     INotificationWriteRepository notificationWriteRepository, 
-    ILogger<ApproveNotificationHandler> logger)
+    IMessageProducer<SetStatusEvent> setStatusProducer,
+    ILogger<SetStatusNotificationHandler> logger)
     : IRequestHandler<SetStatusNotificationCommand>
 {
     public async Task Handle(SetStatusNotificationCommand request, CancellationToken cancellationToken)
@@ -21,5 +23,7 @@ public class ApproveNotificationHandler(
             logger.LogError(ex, "Failed to update status for notification {NotificationId}", request.NotificationId);
             throw; 
         }
+        
+        await setStatusProducer.ProduceAsync(new SetStatusEvent(request.NotificationId, request.Status), cancellationToken);
     }
 }

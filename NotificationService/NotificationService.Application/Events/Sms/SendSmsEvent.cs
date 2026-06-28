@@ -1,3 +1,3 @@
-namespace NotificationService.Application.Events.Sms;
+namespace NotificationService.Application.Events.Sms;   
 
-public record SendSmsEvent(string Address, string Text);
+public record SendSmsEvent(Guid NotificationId, string Address, string Text);

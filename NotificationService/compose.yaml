@@ -15,6 +15,7 @@ services:
       - ConnectionStrings__ReadPostgres=Host=read-notification-postgres;Port=5432;Database=read_notification_db;Username=postgres;Password=abcdefg123;
       - ConnectionStrings__Mongo=mongodb://mongo:27017
       - Kafka__CreateNotificationEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__SetStatusEvent__BootstrapServers=kafka-notification:9092
       - Kafka__ErrorEvent__BootstrapServers=kafka-notification:9092
       - Kafka__ApproveEvent__BootstrapServers=kafka-notification:9092
       - Kafka__SendEmailEvent__BootstrapServers=kafka-notification:9092

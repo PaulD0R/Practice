@@ -1,3 +1,3 @@
 namespace NotificationService.Application.Events.Email;
 
-public record SendEmailEvent(string Address, string Text);
+public record SendEmailEvent(Guid NotificationId, string Address, string Text);

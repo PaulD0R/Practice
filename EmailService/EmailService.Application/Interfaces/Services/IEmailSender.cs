@@ -4,5 +4,5 @@ namespace EmailService.Application.Interfaces.Services;
 
 public interface IEmailSender
 {
-    Task SendAsync(EmailMessage message);
+    Task SendAsync(EmailMessage message, SmtpOptions options);
 }

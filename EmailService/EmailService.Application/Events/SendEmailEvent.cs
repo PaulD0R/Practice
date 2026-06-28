@@ -1,8 +1,6 @@
 namespace EmailService.Application.Events;
 
 public record SendEmailEvent(
-    Guid MessageId,
-    string? Name,
-    string Email,
-    string? Subject,
-    string Body);
+    Guid NotificationId,
+    string Address,
+    string Text);

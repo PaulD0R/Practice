@@ -15,6 +15,11 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9092 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - notification-network
 
@@ -33,6 +38,7 @@ services:
       /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka-notification:9092 --create --if-not-exists --topic error-notification --replication-factor 1 --partitions 1
       /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka-notification:9092 --create --if-not-exists --topic approve-notification --replication-factor 1 --partitions 1
       /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka-notification:9092 --create --if-not-exists --topic create-notification --replication-factor 1 --partitions 1
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka-notification:9092 --create --if-not-exists --topic set-status-notification --replication-factor 1 --partitions 1
       "
     networks:
       - notification-network

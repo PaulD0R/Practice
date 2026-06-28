@@ -17,7 +17,7 @@ public class ArchiveCommandHandler(
 
         try
         {
-            var notifications = (await notificationReadRepository.GetNotificationsOlderThanDateAsync(date))
+            var notifications = (await notificationWriteRepository.GetNotificationsOlderThanDateAsync(date))
                 .ToList();
             if (notifications.Count == 0)
                 return;

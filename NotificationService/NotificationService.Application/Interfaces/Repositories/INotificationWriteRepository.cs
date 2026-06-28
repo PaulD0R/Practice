@@ -5,6 +5,7 @@ namespace NotificationService.Application.Interfaces.Repositories;
 
 public interface INotificationWriteRepository
 {
+    Task<IEnumerable<Notification>> GetNotificationsOlderThanDateAsync(DateTime date);
     Task<Notification> AddAsync(Notification notification);
     Task<bool> UpdateStatusAsync(Guid id, NotificationStatus status);
     Task DeleteNotificationAfterDateAsync(DateTime date);

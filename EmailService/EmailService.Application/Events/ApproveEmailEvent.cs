@@ -1,4 +1,3 @@
 namespace EmailService.Application.Events;
 
-public record ApproveEmailEvent(
-    Guid MessageId);
+public record ApproveEmailEvent(Guid NotificationId);

@@ -36,13 +36,13 @@ public static class NotificationMapper
     extension(Notification notification)
     {
         public SendEmailEvent ToSendEmailEvent() =>
-            new(notification.Address, notification.Text);
+            new(notification.Id, notification.Address, notification.Text);
 
         public SendSmsEvent ToSendSmsEvent() =>
-            new(notification.Address, notification.Text);
+            new(notification.Id, notification.Address, notification.Text);
 
         public SendPushEvent ToSendPushEvent() =>
-            new(notification.Address, notification.Text);
+            new(notification.Id, notification.Address, notification.Text);
 
         public NotificationDto ToNotificationDto() =>
             new(notification.Id, notification.Address, notification.Text, notification.Status);

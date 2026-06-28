@@ -1,0 +1,57 @@
+﻿version: '3.8'
+
+services:
+  emailservice.api:
+    image: emailservice.api
+    container_name: email-service-api
+    build:
+      context: .
+      dockerfile: EmailService.API/Dockerfile
+    environment:
+      - ConnectionStrings__Postgres=Host=email-postgres;Port=5432;Database=email_db;Username=postgres;Password=asdfgh67;
+      - ConnectionStrings__Redis=email-redis:6379
+
+      - Kafka__SendEmailEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__SendEmailEvent__Topic=send-email
+      - Kafka__SendEmailEvent__GroupId=email-service
+
+      - Kafka__ApproveEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__ApproveEvent__Topic=approve-notification
+
+      - Kafka__ErrorEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__ErrorEvent__Topic=error-notification
+    depends_on:
+      - email-postgres
+      - email-redis
+    networks:
+      - notification-network
+
+  email-postgres:
+    image: postgres:16
+    container_name: email-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: asdfgh67
+      POSTGRES_DB: email_db
+    volumes:
+      - email_postgres_data:/var/lib/postgresql/data
+      - ./Databases/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - notification-network
+
+  email-redis:
+    image: redis:7-alpine
+    container_name: email-redis
+    volumes:
+      - email_redis_data:/data
+    networks:
+      - notification-network
+
+volumes:
+  email_postgres_data:
+  email_redis_data:
+
+networks:
+  notification-network:
+    external: true

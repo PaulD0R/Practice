@@ -8,7 +8,7 @@ using NotificationService.Application.Queries.GetNotifications;
 namespace NotificationService.API.Controllers;
 
 [ApiController]
-[Authorize]
+//[Authorize]
 [EnableRateLimiting("NotificationPolicy")]
 [Route("api/notifications")]
 public class NotificationController(IMediator mediator) : ControllerBase

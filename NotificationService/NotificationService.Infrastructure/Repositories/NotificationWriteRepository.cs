@@ -8,6 +8,11 @@ namespace NotificationService.Infrastructure.Repositories;
 
 public class NotificationWriteRepository(WriteDbContext context) : INotificationWriteRepository
 { 
+    public async Task<IEnumerable<Notification>> GetNotificationsOlderThanDateAsync(DateTime date)
+    {
+        return await context.Notifications.Where(n => n.CreatedOn < date).ToListAsync();
+    }
+    
     public async Task<Notification> AddAsync(Notification notification)
     {
         var newNotification = await context.Notifications.AddAsync(notification);
