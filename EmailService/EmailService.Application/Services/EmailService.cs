@@ -1,6 +1,7 @@
 using EmailService.Application.Events;
 using EmailService.Application.Interfaces.Caching;
 using EmailService.Application.Interfaces.Messages;
+using EmailService.Application.Interfaces.Providers;
 using EmailService.Application.Interfaces.Repositories;
 using EmailService.Application.Interfaces.Services;
 using EmailService.Application.Mappers;
@@ -11,66 +12,42 @@ using Microsoft.Extensions.Logging;
 namespace EmailService.Application.Services;
 
 public class EmailService(
-    ISmtpRepository smtpRepository,
     IEmailSender sender, 
+    ISmtpProvider smtpProvider,
     IMessageProducer<ApproveEmailEvent> approveProducer,
     IMessageProducer<ErrorEmailEvent> errorProducer,
-    ICachingService cachingService,
     ILogger<EmailService> logger) 
     : IEmailService
 {
-    private const string SmtpKey = "smtp-options";
-    
-    public async Task<EmailMessage> SendAsync(SendEmailEvent message)
+    public async Task<EmailMessage> SendEmailAsync(SendEmailEvent message)
     {
         var emailMessage = message.ToEmailMessage();
-        try
+        var options = await smtpProvider.GetSmtpOptionsAsync();
+        foreach (var option in options)
         {
-            var options = await cachingService.GetAsync<SmtpOptions>(SmtpKey);
-            if (options == null) throw new NullReferenceException("Smtp options not found");
-            return await TrySendAsync(emailMessage, options);
-        }
-        catch
-        {
-            var optionsList = await smtpRepository.GetSmtpOptionsAsync();
-            foreach (var option in optionsList)
+            try
             {
-                try
-                {
-                    var result = await TrySendAsync(emailMessage, option);
-                    await cachingService.SetAsync(SmtpKey, result);
-                    return result;
-                }
-                catch(Exception e)
-                {
-                    logger.LogError(e, "Failed send to {host}: {error}", option.Host, e.Message);
-                }
+                await sender.SendAsync(emailMessage, option);
+                return emailMessage;
             }
-
-            await errorProducer.ProduceAsync(new ErrorEmailEvent(message.NotificationId, "Failed to send message"));
-            logger.LogError("Failed to send message");
-            throw new InternalServerException("Failed to send message");
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed send to {host}: {error}", option.Host, e.Message);
+            }
         }
+        
+        logger.LogError("Failed to send message");
+        throw new InternalServerException("Failed to send message");
     }
 
-    public async Task ApproveMessageAsync(EmailMessage message)
+    public async Task SendApproveMessageAsync(EmailMessage message)
     {
         var approveEvent = message.ToApproveMessageEvent();
         await approveProducer.ProduceAsync(approveEvent);
     }
 
-    private async Task<EmailMessage> TrySendAsync(EmailMessage emailMessage, SmtpOptions options)
+    public async Task SendErrorMessageAsync(Guid messageId, string errorMessage)
     {
-        try
-        {    
-            await sender.SendAsync(emailMessage, options);
-            return emailMessage;
-        }
-        catch (Exception e)
-        {
-            await errorProducer.ProduceAsync(new ErrorEmailEvent(emailMessage.Id,  e.Message));
-            logger.LogError(e, e.Message);
-            throw new InternalServerException("Failed to send message");
-        }
+        await errorProducer.ProduceAsync(new ErrorEmailEvent(messageId, errorMessage));
     }
 }

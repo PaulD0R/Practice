@@ -5,6 +5,7 @@ namespace SmsService.Application.Interfaces.Services;
 
 public interface ISmsService
 {
-    Task<Sms> SendAsync(SendSmsEvent message);
-    Task ApproveMessageAsync(Sms message);
+    Task<Sms> SendSmsAsync(SendSmsEvent message);
+    Task SendApproveMessageAsync(Sms message);
+    Task SendErrorMessageAsync(Guid messageId, string errorMessage);
 }

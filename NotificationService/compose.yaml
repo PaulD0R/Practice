@@ -72,5 +72,5 @@ volumes:
   kafka_data:
     
 networks:
-  notification-network:
-    external: true
+    notification-network:
+      external: true

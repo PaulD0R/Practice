@@ -9,8 +9,15 @@ public class SendSmsEventHandler(IServiceScopeFactory scopeFactory) : IMessageHa
     public async Task HandleAsync(SendSmsEvent message, CancellationToken token)
     {
         using var scope = scopeFactory.CreateScope();
-        var smsService = scope.ServiceProvider.GetRequiredService<ISmsService>();
-        var sms = await smsService.SendAsync(message);
-        await smsService.ApproveMessageAsync(sms); 
+        var service = scope.ServiceProvider.GetRequiredService<ISmsService>();
+        try
+        {
+            var smsMessage = await service.SendSmsAsync(message);
+            await service.SendApproveMessageAsync(smsMessage);
+        }
+        catch(Exception e)
+        {
+            await service.SendErrorMessageAsync(message.NotificationId, e.Message);
+        }
     }
 }

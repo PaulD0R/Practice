@@ -20,6 +20,8 @@ public class ErrorEventHandler(
             using var scope = scopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
             await mediator.Send(new SetStatusNotificationCommand(message.NotificationId, NotificationStatus.Failed), token);
+            logger.LogInformation("Failed to send notification {NotificationId}: {Message}",
+                message.NotificationId, message.Message);
         }
         catch (Exception e)
         {

@@ -1,11 +1,11 @@
 using EmailService.API.KafkaConsumers;
 using EmailService.API.Options;
-using EmailService.Application.Factories;
 using EmailService.Application.Interfaces.Caching;
-using EmailService.Application.Interfaces.Factories;
 using EmailService.Application.Interfaces.Messages;
+using EmailService.Application.Interfaces.Providers;
 using EmailService.Application.Interfaces.Repositories;
 using EmailService.Application.Interfaces.Services;
+using EmailService.Application.Providers;
 using EmailService.Infrastructure.Context;
 using EmailService.Infrastructure.KafkaProducers;
 using EmailService.Infrastructure.MailKit;
@@ -54,10 +54,9 @@ public static class ProgramExtension
 
         public IServiceCollection AddServices()
         {
-            services.AddSingleton<IFactory<IEmailService>, EmailServiceFactory>();
-
             services.AddScoped<ISmtpRepository, SmtpRepository>();
             services.AddScoped<ICachingService, RedisCachingService>();
+            services.AddScoped<ISmtpProvider, SmtpProvider>();
             services.AddScoped<IEmailService, Application.Services.EmailService>();
             
             return services;

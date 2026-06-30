@@ -12,8 +12,12 @@ public class RedisCachingService(IDistributedCache cache) : ICachingService
         return stringResult == null ? default : JsonSerializer.Deserialize<T>(stringResult);
     }
 
-    public async Task SetAsync<T>(string key, T value)
+    public async Task SetAsync<T>(string key, T value, TimeSpan expiration)
     {
-        await cache.SetStringAsync(key, JsonSerializer.Serialize(value));
+        var cacheOptions = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = expiration
+        };
+        await cache.SetStringAsync(key, JsonSerializer.Serialize(value), cacheOptions);
     }
 }

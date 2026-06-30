@@ -6,7 +6,7 @@ namespace SmsService.Infrastructure.SmsRu;
 
 public class SmsRuSender(HttpClient httpClient, IOptions<SmsRuOptions> options) : ISmsSender
 {
-    public async Task<bool> SendAsync(Domain.Models.Sms message)
+    public async Task<HttpResponseMessage> SendAsync(Domain.Models.Sms message)
     {
         var config = new Dictionary<string, string>
         {
@@ -16,10 +16,6 @@ public class SmsRuSender(HttpClient httpClient, IOptions<SmsRuOptions> options) 
         };
         var content = new FormUrlEncodedContent(config);
 
-        var response = await httpClient.PostAsync(options.Value.Url, content);
-        if (!response.IsSuccessStatusCode) return false;
-
-        var jsonString = await response.Content.ReadAsStringAsync();
-        return jsonString.Contains("\"status\": \"OK\"");
+        return await httpClient.PostAsync(options.Value.Url, content);
     }
 }

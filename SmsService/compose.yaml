@@ -1,0 +1,23 @@
+﻿services:
+  emailservice.api:
+    image: emailservice.api
+    build:
+      context: .
+      dockerfile: EmailService.API/Dockerfile
+    environment:
+      - Kafka__SendSmsEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__SendSmsEvent__Topic=approve-notification
+      - Kafka__SendSmsEvent__GroupId=sms-service
+
+      - Kafka__ErrorSmsEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__ErrorSmsEvent__Topic=error-notification
+      - Kafka__ErrorSmsEvent__GroupId=sms-service
+
+      - SmsRuOptions__ApiId=api 
+      - SmsRuOptions__Url=https://sms.ru/sms/send
+    networks:
+      - notification-network
+    
+networks:
+  notification-network:
+    external: true

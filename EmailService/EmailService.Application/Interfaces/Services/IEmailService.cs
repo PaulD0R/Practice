@@ -5,6 +5,7 @@ namespace EmailService.Application.Interfaces.Services;
 
 public interface IEmailService
 {
-    Task<EmailMessage> SendAsync(SendEmailEvent message);
-    Task ApproveMessageAsync(EmailMessage message);
+    Task<EmailMessage> SendEmailAsync(SendEmailEvent message);
+    Task SendApproveMessageAsync(EmailMessage message);
+    Task SendErrorMessageAsync(Guid messageId, string errorMessage);
 }
