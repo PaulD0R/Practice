@@ -4,5 +4,5 @@ namespace PushService.Application.Interfaces.Services;
 
 public interface IPushSender
 {
-    Task SendAsync(PushMessage message);
+    Task<HttpResponseMessage> SendAsync(PushMessage message);
 }

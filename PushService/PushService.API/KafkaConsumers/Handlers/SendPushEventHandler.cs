@@ -10,7 +10,14 @@ public class SendPushEventHandler(IServiceScopeFactory scopeFactory) : IMessageH
     {
         using var scope = scopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IPushService>();
-        var emailMessage = await service.SendAsync(message);
-        await service.ApproveMessageAsync(emailMessage);
+        try
+        {
+            var pushMessage = await service.SendPushAsync(message);
+            await service.SendApproveMessageAsync(pushMessage);
+        }
+        catch (Exception e)
+        {
+            await service.SendErrorMessageAsync(message.NotificationId, e.Message);
+        }
     }
 }

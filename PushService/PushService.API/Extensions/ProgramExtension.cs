@@ -1,10 +1,10 @@
 using PushService.Infrastructure.KafkaProducers;
-using PushService.Infrastructure.MailKit;
 using PushService.Infrastructure.Options;
 using PushService.API.KafkaConsumers;
 using PushService.API.Options;
 using PushService.Application.Interfaces.Messages;
 using PushService.Application.Interfaces.Services;
+using PushService.Infrastructure.PushSender;
 
 namespace PushService.API.Extensions;
 
@@ -37,10 +37,10 @@ public static class ProgramExtension
             return services;
         }
 
-        public IServiceCollection AddMailKitService(IConfigurationSection configuration)
+        public IServiceCollection AddPushSender(IConfigurationSection configuration)
         {
-            services.Configure<MailKitOptions>(configuration);
-            services.AddScoped<IPushSender, MailKitSender>();
+            services.Configure<PushOptions>(configuration);
+            services.AddScoped<IPushSender, PushSender>();
 
             return services;
         }

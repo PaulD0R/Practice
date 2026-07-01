@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/notifications/push"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": "mocked-notification-id-12345",
+      "recipients": 1,
+      "external_id": "success"
+    }
+  }
+}

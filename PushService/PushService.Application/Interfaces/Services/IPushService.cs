@@ -5,6 +5,7 @@ namespace PushService.Application.Interfaces.Services;
 
 public interface IPushService
 {
-    Task<PushMessage> SendAsync(SendPushEvent message);
-    Task ApproveMessageAsync(PushMessage message);
+    Task<PushMessage> SendPushAsync(SendPushEvent message);
+    Task SendApproveMessageAsync(PushMessage message);
+    Task SendErrorMessageAsync(Guid notificationId, string message);
 }
