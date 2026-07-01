@@ -1,0 +1,15 @@
+services:
+  mock-api:
+    image: wiremock/wiremock:3.5.0-alpine
+    container_name: mock-notification-service
+    ports:
+      - "8080"
+    volumes:
+      - ./mapping:/home/wiremock/mapping
+    restart: always
+    networks:
+      - notification-network
+    
+networks:
+  notification-network:
+    external: true
