@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NotificationService.Application.Commands.SetStatusNotification;
 using NotificationService.Application.Events;
-using NotificationService.Application.Interfaces.Messages;
+using NotificationSolution.MessageBroker.Abstraction;
 
 namespace NotificationService.Infrastructure.Kafka.Handlers;
 

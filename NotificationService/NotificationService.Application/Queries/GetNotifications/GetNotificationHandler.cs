@@ -16,7 +16,8 @@ public class GetNotificationHandler(
     {
         try
         {
-            var notifications = await notificationReadRepository.GetNotificationsAsync();
+            var notifications = await notificationReadRepository.
+                GetNotificationsAsync(request.HelpNotificationDto);
             return notifications.Select(notification => notification.ToNotificationDto());
         }
         catch (Exception e)

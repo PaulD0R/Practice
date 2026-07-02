@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using NotificationService.Application.Commands.AddNotification;
+using NotificationService.Application.DTOs;
 using NotificationService.Application.Queries.GetNotifications;
 
 namespace NotificationService.API.Controllers;
@@ -23,9 +24,9 @@ public class NotificationController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetNotifications()
+    public async Task<IActionResult> GetNotifications([FromQuery] HelpNotificationDto helpNotification)
     {
-        var notifications = await mediator.Send(new GetNotificationsQuery());
+        var notifications = await mediator.Send(new GetNotificationsQuery(helpNotification));
         return Ok(notifications);
     }
 }

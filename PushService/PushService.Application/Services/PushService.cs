@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
+using NotificationSolution.MessageBroker.Abstraction;
 using PushService.Application.Events;
-using PushService.Application.Interfaces.Messages;
 using PushService.Application.Interfaces.Services;
 using PushService.Application.Mappers;
 using PushService.Domain.Exceptions;
@@ -17,11 +17,11 @@ public class PushService(
 {
     public async Task<PushMessage> SendPushAsync(SendPushEvent message)
     {
-        var pushMessage = message.ToPushMessage();
         try
         {
-            await sender.SendAsync(pushMessage);
-            return pushMessage;
+            var push = message.ToPushMessage();
+            var status = await sender.SendAsync(push);
+            return status.IsSuccessStatusCode ? push : throw new InternalServerException(status.StatusCode.ToString());
         }
         catch (Exception e)
         {

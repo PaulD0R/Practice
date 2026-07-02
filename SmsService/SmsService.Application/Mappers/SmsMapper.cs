@@ -5,11 +5,12 @@ namespace SmsService.Application.Mappers;
 
 public static class SmsMapper
 {
-    public static Sms ToSms(this SendSmsEvent message) => new Sms
+    public static Sms ToSms(this SendSmsEvent message) => 
+        new() 
     {
-        Id = message.Id,
-        PhoneNumber = message.PhoneNumber,
-        Message = message.Message
+        Id = message.NotificationId,
+        PhoneNumber = message.Address,
+        Message = message.Text
     };
 
     public static ApproveSmsEvent ToApproveSmsEvent(this Sms message) => new(message.Id);

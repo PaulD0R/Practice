@@ -1,13 +1,11 @@
 using EmailService.Application.Events;
-using EmailService.Application.Interfaces.Caching;
-using EmailService.Application.Interfaces.Messages;
 using EmailService.Application.Interfaces.Providers;
-using EmailService.Application.Interfaces.Repositories;
 using EmailService.Application.Interfaces.Services;
 using EmailService.Application.Mappers;
 using EmailService.Domain.Exceptions;
 using EmailService.Domain.Models;
 using Microsoft.Extensions.Logging;
+using NotificationSolution.MessageBroker.Abstraction;
 
 namespace EmailService.Application.Services;
 

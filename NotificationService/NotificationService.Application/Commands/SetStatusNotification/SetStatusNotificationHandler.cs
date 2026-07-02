@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NotificationService.Application.Events;
-using NotificationService.Application.Interfaces.Messages;
 using NotificationService.Application.Interfaces.Repositories;
+using NotificationSolution.MessageBroker.Abstraction;
 
 namespace NotificationService.Application.Commands.SetStatusNotification;
 

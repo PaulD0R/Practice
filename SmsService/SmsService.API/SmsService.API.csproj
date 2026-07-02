@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-EmailService.API-d985da10-a525-41b2-bc5d-80410c7d3fd2</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0-rc.2.25502.107"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="11.0.0-preview.4.26230.115" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SmsService.Infrastructure\SmsService.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\Shared\NotificationSolution.MessageBroker.Kafka\NotificationSolution.MessageBroker.Kafka.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+</Project>

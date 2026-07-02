@@ -10,14 +10,15 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using NotificationService.Application.Commands.AddNotification;
-using NotificationService.Application.Interfaces.Messages;
 using NotificationService.Application.Interfaces.Repositories;
 using NotificationService.Domain.Enums;
 using NotificationService.Infrastructure.BackgroundServices;
 using NotificationService.Infrastructure.Context;
-using NotificationService.Infrastructure.Kafka;
 using NotificationService.Infrastructure.Options;
 using NotificationService.Infrastructure.Repositories;
+using NotificationSolution.MessageBroker.Abstraction;
+using NotificationSolution.MessageBroker.Kafka.Consumer;
+using NotificationSolution.MessageBroker.Kafka.Producer;
 
 namespace NotificationService.API.Extensions;
 
@@ -44,25 +45,6 @@ public static class ProgramExtensions
 
             return services;
         }
-
-        public IServiceCollection AddKafkaProducer<TMessage>(IConfigurationSection configuration)
-        {
-            services.Configure<KafkaProducerOptions>(typeof(TMessage).Name, configuration);
-            services.AddSingleton<IMessageProducer<TMessage>, KafkaMessageProducer<TMessage>>();
-        
-            return services;
-        }
-        
-        public IServiceCollection AddKafkaConsumer<TMessage, THandler>(IConfigurationSection configuration)
-            where THandler : class, IMessageHandler<TMessage>
-        {
-            services.Configure<KafkaConsumerOptions>(typeof(TMessage).Name, configuration);
-            services.AddHostedService<KafkaMessageConsumer<TMessage>>();
-            services.AddSingleton<IMessageHandler<TMessage>, THandler>();
-
-            return services;
-        }
-
 
         public IServiceCollection AddApplicationServices(IConfiguration configuration)
         {

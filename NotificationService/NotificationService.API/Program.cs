@@ -5,6 +5,7 @@ using NotificationService.Application.Events.Email;
 using NotificationService.Application.Events.Push;
 using NotificationService.Application.Events.Sms;
 using NotificationService.Infrastructure.Kafka.Handlers;
+using NotificationSolution.MessageBroker.Kafka.Extensions;
 using ErrorEventHandler = NotificationService.Infrastructure.Kafka.Handlers.ErrorEventHandler;
 
 var builder = WebApplication.CreateBuilder(args);

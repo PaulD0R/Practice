@@ -1,20 +1,17 @@
 ﻿services:
-  emailservice.api:
-    image: emailservice.api
+  smsservice.api:
+    image: smsservice.api
+    container_name: sms-service-api
     build:
-      context: .
-      dockerfile: EmailService.API/Dockerfile
+      context: ..
+      dockerfile: SmsService/SmsService.API/Dockerfile
     environment:
       - Kafka__SendSmsEvent__BootstrapServers=kafka-notification:9092
-      - Kafka__SendSmsEvent__Topic=approve-notification
-      - Kafka__SendSmsEvent__GroupId=sms-service
-
       - Kafka__ErrorSmsEvent__BootstrapServers=kafka-notification:9092
-      - Kafka__ErrorSmsEvent__Topic=error-notification
-      - Kafka__ErrorSmsEvent__GroupId=sms-service
+      - Kafka__ApproveSmsEvent__BootstrapServers=kafka-notification:9092
 
-      - SmsRuOptions__ApiId=api 
-      - SmsRuOptions__Url=https://sms.ru/sms/send
+      - SmsOptions__ApiId=api 
+      - SmsOptions__Url=http://mock-notification-service:8080/notifications/sms
     networks:
       - notification-network
     

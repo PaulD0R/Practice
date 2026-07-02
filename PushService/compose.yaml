@@ -1,15 +1,16 @@
 ﻿services:
   pushservice.api:
     image: pushservice.api
+    container_name: push-service-api
     build:
-      context: .
-      dockerfile: PushService.API/Dockerfile
+      context: ..
+      dockerfile: PushService/PushService.API/Dockerfile
     environment:
-      - Kafka__SendPushEvent__BootstrapServers=kafka:9092
-      - Kafka__ErrorPushEvent__BootstrapServers=kafka:9092
-      - Kafka__ApprovePushEvent__BootstrapServers=kafka:9092
+      - Kafka__SendPushEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__ErrorPushEvent__BootstrapServers=kafka-notification:9092
+      - Kafka__ApprovePushEvent__BootstrapServers=kafka-notification:9092
 
-      - OneSignal__Url=http://mock-api:8080/api/v1/notifications/push
+      - OneSignal__Url=http://mock-notification-service:8080/notifications/push
       - OneSignal__ApiId=mock-app-id
       - OneSignal__ApiKey=mock-api-key
     networks:

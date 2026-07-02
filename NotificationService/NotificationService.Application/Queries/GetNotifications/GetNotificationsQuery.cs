@@ -3,4 +3,4 @@ using NotificationService.Application.DTOs;
 
 namespace NotificationService.Application.Queries.GetNotifications;
 
-public record GetNotificationsQuery() : IRequest<IEnumerable<NotificationDto>>;
+public record GetNotificationsQuery(HelpNotificationDto HelpNotificationDto) : IRequest<IEnumerable<NotificationDto>>;

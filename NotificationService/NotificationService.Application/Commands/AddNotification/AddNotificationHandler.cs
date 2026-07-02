@@ -5,12 +5,12 @@ using NotificationService.Application.Events;
 using NotificationService.Application.Events.Email;
 using NotificationService.Application.Events.Push;
 using NotificationService.Application.Events.Sms;
-using NotificationService.Application.Interfaces.Messages;
 using NotificationService.Application.Interfaces.Repositories;
 using NotificationService.Application.Mappers;
 using NotificationService.Domain.Enums;
 using NotificationService.Domain.Exceptions;
 using NotificationService.Domain.Models;
+using NotificationSolution.MessageBroker.Abstraction;
 
 namespace NotificationService.Application.Commands.AddNotification;
 

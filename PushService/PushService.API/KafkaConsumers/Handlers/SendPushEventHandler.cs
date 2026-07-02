@@ -1,12 +1,12 @@
+using NotificationSolution.MessageBroker.Abstraction;
 using PushService.Application.Events;
-using PushService.Application.Interfaces.Messages;
 using PushService.Application.Interfaces.Services;
 
 namespace PushService.API.KafkaConsumers.Handlers;
 
 public class SendPushEventHandler(IServiceScopeFactory scopeFactory) : IMessageHandler<SendPushEvent>
 {
-    public async Task HandlerAsync(SendPushEvent message, CancellationToken token = default)
+    public async Task HandleAsync(SendPushEvent message, CancellationToken token = default)
     {
         using var scope = scopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IPushService>();

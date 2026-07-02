@@ -5,8 +5,8 @@ services:
     image: emailservice.api
     container_name: email-service-api
     build:
-      context: .
-      dockerfile: EmailService.API/Dockerfile
+      context: ..
+      dockerfile: EmailService/EmailService.API/Dockerfile
     environment:
       - ConnectionStrings__Postgres=Host=email-postgres;Port=5432;Database=email_db;Username=postgres;Password=asdfgh67;
       - ConnectionStrings__Redis=email-redis:6379

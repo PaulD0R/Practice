@@ -1,5 +1,6 @@
+using Microsoft.Extensions.Logging;
+using NotificationSolution.MessageBroker.Abstraction;
 using SmsService.Application.Events;
-using SmsService.Application.Interfaces.Messages;
 using SmsService.Application.Interfaces.Services;
 using SmsService.Application.Mappers;
 using SmsService.Domain.Exeptions;
@@ -10,7 +11,8 @@ namespace SmsService.Application.Services;
 public class SmsService(
     ISmsSender smsSender,
     IMessageProducer<ApproveSmsEvent> approveProducer,
-    IMessageProducer<ErrorSmsEvent> errorProducer) 
+    IMessageProducer<ErrorSmsEvent> errorProducer,
+    ILogger<SmsService> logger) 
     : ISmsService
 {
     public async Task<Sms> SendSmsAsync(SendSmsEvent message)
@@ -23,6 +25,7 @@ public class SmsService(
         }
         catch(Exception e)
         {
+            logger.LogError(e, "Failed to send sms: {Message}", e.Message);
             throw new InternalServerException(e.Message);
         }
     }

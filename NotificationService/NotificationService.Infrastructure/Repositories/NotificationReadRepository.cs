@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NotificationService.Application.DTOs;
 using NotificationService.Application.Interfaces.Repositories;
 using NotificationService.Domain.Enums;
 using NotificationService.Domain.Models;
@@ -8,9 +9,20 @@ namespace NotificationService.Infrastructure.Repositories;
 
 public class NotificationReadRepository(ReadDbContext context) : INotificationReadRepository
 {
-    public async Task<IEnumerable<Notification>> GetNotificationsAsync()
+    public async Task<IEnumerable<Notification>> GetNotificationsAsync(HelpNotificationDto helpNotification)
     {
-        return await context.Notifications.ToListAsync();
+        var query = context.Notifications.AsQueryable();
+        if (!string.IsNullOrWhiteSpace(helpNotification.Address))
+            query = query.Where(n => n.Address == helpNotification.Address);
+        
+        if (!helpNotification.Date.HasValue) return await query.ToListAsync();
+
+        var rawDate = helpNotification.Date.Value.ToDateTime(TimeOnly.MinValue);
+        var startDate = DateTime.SpecifyKind(rawDate, DateTimeKind.Utc);
+        var endDate = startDate.AddDays(1);
+
+        query = query.Where(n => n.CreatedOn >= startDate && n.CreatedOn < endDate);
+        return await query.ToListAsync();
     }
 
     public async Task<Notification?> GetNotificationByIdAsync(Guid id)

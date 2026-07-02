@@ -1,15 +1,10 @@
-using EmailService.API.KafkaConsumers;
-using EmailService.API.Options;
 using EmailService.Application.Interfaces.Caching;
-using EmailService.Application.Interfaces.Messages;
 using EmailService.Application.Interfaces.Providers;
 using EmailService.Application.Interfaces.Repositories;
 using EmailService.Application.Interfaces.Services;
 using EmailService.Application.Providers;
 using EmailService.Infrastructure.Context;
-using EmailService.Infrastructure.KafkaProducers;
 using EmailService.Infrastructure.MailKit;
-using EmailService.Infrastructure.Options;
 using EmailService.Infrastructure.Redis;
 using EmailService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -31,24 +26,6 @@ public static class ProgramExtension
                 options.InstanceName = "EmailService:"; 
             });
 
-            return services;
-        }
-        
-        public IServiceCollection AddConsumer<TMessage, THandler>(IConfigurationSection configuration)
-            where THandler : class, IMessageHandler<TMessage>
-        {
-            services.Configure<KafkaConsumerOptions>(typeof(TMessage).Name, configuration);
-            services.AddSingleton<IMessageHandler<TMessage>, THandler>();
-            services.AddHostedService<KafkaMessageConsumer<TMessage>>();
-        
-            return services;
-        }
-
-        public IServiceCollection AddProducer<TMessage>(IConfigurationSection configuration)
-        {
-            services.Configure<KafkaProducerOptions>(typeof(TMessage).Name, configuration);
-            services.AddSingleton<IMessageProducer<TMessage>, KafkaMessageProducer<TMessage>>();
-        
             return services;
         }
 

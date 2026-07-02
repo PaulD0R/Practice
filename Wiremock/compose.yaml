@@ -1,11 +1,9 @@
 services:
   mock-api:
-    image: wiremock/wiremock:3.5.0-alpine
+    image: wiremock/wiremock:latest
     container_name: mock-notification-service
-    ports:
-      - "8080"
     volumes:
-      - ./mapping:/home/wiremock/mapping
+      - ./mappings:/home/wiremock/mappings
     restart: always
     networks:
       - notification-network

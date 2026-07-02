@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SmsService.Domain\SmsService.Domain.csproj" />
+        <ProjectReference Include="..\SmsService.Domain\SmsService.Domain.csproj" />
+        <ProjectReference Include="..\..\Shared\NotificationSolution.MessageBroker.Abstraction\NotificationSolution.MessageBroker.Abstraction.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9" />
     </ItemGroup>
 
 </Project>
