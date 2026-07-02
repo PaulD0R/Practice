@@ -13,8 +13,10 @@ COPY ["NotificationService/NotificationService.API/NotificationService.API.cspro
 COPY ["NotificationService/NotificationService.Infrastructure/NotificationService.Infrastructure.csproj", "NotificationService/NotificationService.Infrastructure/"]
 COPY ["NotificationService/NotificationService.Application/NotificationService.Application.csproj", "NotificationService/NotificationService.Application/"]
 COPY ["NotificationService/NotificationService.Domain/NotificationService.Domain.csproj", "NotificationService/NotificationService.Domain/"]
+COPY ["NotificationService/NotificationService.Tests/NotificationService.Tests.csproj", "NotificationService/NotificationService.Tests/"]
 RUN dotnet restore "NotificationService/NotificationService.API/NotificationService.API.csproj"
 COPY . .
+RUN dotnet test "./NotificationService/NotificationService.Tests/NotificationService.Tests.csproj" --configuration Release
 WORKDIR "/src/NotificationService/NotificationService.API"
 RUN dotnet build "./NotificationService.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
