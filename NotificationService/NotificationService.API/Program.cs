@@ -1,3 +1,6 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using NotificationService.API.Exceptions;
 using NotificationService.API.Extensions;
 using NotificationService.Application.Events;
@@ -8,6 +11,7 @@ using NotificationService.Infrastructure.Kafka.Handlers;
 using NotificationSolution.MessageBroker.Kafka.Extensions;
 using ErrorEventHandler = NotificationService.Infrastructure.Kafka.Handlers.ErrorEventHandler;
 
+BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
