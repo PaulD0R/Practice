@@ -43,6 +43,21 @@ services:
     networks:
       - notification-network
 
+  rabbitmq:
+    image: masstransit/rabbitmq:latest
+    container_name: rabbitmq-notification
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - notification-network
+
+volumes:
+  rabbitmq_data:
+
 networks:
   notification-network:
     external: true

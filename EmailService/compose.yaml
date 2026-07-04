@@ -20,6 +20,10 @@ services:
 
       - Kafka__ErrorEvent__BootstrapServers=kafka-notification:9092
       - Kafka__ErrorEvent__Topic=error-notification
+      
+      - Rabbit__RetrySendEvent__HostName=rabbitmq-notification
+      - Rabbit__RetrySendEvent__UserName=guest
+      - Rabbit__RetrySendEvent__Password=guest
     depends_on:
       - email-postgres
       - email-redis

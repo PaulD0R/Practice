@@ -14,6 +14,7 @@ public class EmailService(
     ISmtpProvider smtpProvider,
     IMessageProducer<ApproveEmailEvent> approveProducer,
     IMessageProducer<ErrorEmailEvent> errorProducer,
+    IMessageProducer<RetrySendEmailEvent> retryProducer,
     ILogger<EmailService> logger) 
     : IEmailService
 {
@@ -36,6 +37,11 @@ public class EmailService(
         
         logger.LogError("Failed to send message");
         throw new InternalServerException("Failed to send message");
+    }
+
+    public async Task SendRetryMessageAsync(RetrySendEmailEvent message, TimeSpan delay)
+    {
+        await retryProducer.ProduceAsync(message, CancellationToken.None, delay);
     }
 
     public async Task SendApproveMessageAsync(EmailMessage message)

@@ -26,7 +26,7 @@ public class KafkaMessageProducer<TMessage> : IMessageProducer<TMessage>, IDispo
         _logger = logger;
     }
     
-    public async Task ProduceAsync(TMessage message, CancellationToken token = default)
+    public async Task ProduceAsync(TMessage message, CancellationToken token = default, TimeSpan? timeout = null)
     {
         try
         {

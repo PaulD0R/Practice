@@ -13,6 +13,10 @@
       - OneSignal__Url=http://mock-notification-service:8080/notifications/push
       - OneSignal__ApiId=mock-app-id
       - OneSignal__ApiKey=mock-api-key
+
+      - Rabbit__RetrySendEvent__HostName=rabbitmq-notification
+      - Rabbit__RetrySendEvent__UserName=guest
+      - Rabbit__RetrySendEvent__Password=guest
     networks:
       - notification-network
     

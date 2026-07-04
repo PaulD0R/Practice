@@ -1,6 +1,7 @@
 using NotificationSolution.MessageBroker.Abstraction;
 using SmsService.Application.Events;
 using SmsService.Application.Interfaces.Services;
+using SmsService.Application.Mappers;
 
 namespace SmsService.API.KafkaConsumers.Handlers;
 
@@ -17,7 +18,7 @@ public class SendSmsEventHandler(IServiceScopeFactory scopeFactory) : IMessageHa
         }
         catch(Exception e)
         {
-            await service.SendErrorMessageAsync(message.NotificationId, e.Message);
+            await service.SendRetryMessageAsync(message.ToRetrySendSmsEvent(), TimeSpan.FromSeconds(1));
         }
     }
 }

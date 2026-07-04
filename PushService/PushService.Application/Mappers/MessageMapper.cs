@@ -15,4 +15,13 @@ public static class MessageMapper
 
     public static ApprovePushEvent ToApprovePushEvent(this PushMessage message) =>
         new(message.Id);
+    
+    public static RetrySendPushEvent ToRetrySendPushEvent(this SendPushEvent message) =>
+        new(message.NotificationId, message.Address, message.Text, 1);
+    
+    public static SendPushEvent ToSendPushEvent(this RetrySendPushEvent message) =>
+        new(message.NotificationId, message.Address, message.Text);
+    
+    public static RetrySendPushEvent ToNewRetrySendPushEvent(this RetrySendPushEvent message) =>
+        new(message.NotificationId, message.Address, message.Text, message.RetryNumber + 1);
 }

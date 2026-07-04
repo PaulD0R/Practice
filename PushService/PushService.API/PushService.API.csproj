@@ -16,6 +16,7 @@
     <ItemGroup>
         <ProjectReference Include="..\PushService.Infrastructure\PushService.Infrastructure.csproj" />
         <ProjectReference Include="..\..\Shared\NotificationSolution.MessageBroker.Kafka\NotificationSolution.MessageBroker.Kafka.csproj" />
+        <ProjectReference Include="..\..\Shared\NotificationSolution.MessageBroker.Rabbit\NotificationSolution.MessageBroker.Rabbit.csproj" />
     </ItemGroup>
 
     <ItemGroup>

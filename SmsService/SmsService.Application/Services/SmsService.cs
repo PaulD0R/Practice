@@ -12,6 +12,7 @@ public class SmsService(
     ISmsSender smsSender,
     IMessageProducer<ApproveSmsEvent> approveProducer,
     IMessageProducer<ErrorSmsEvent> errorProducer,
+    IMessageProducer<RetrySendSmsEvent> retryProducer,
     ILogger<SmsService> logger) 
     : ISmsService
 {
@@ -28,6 +29,11 @@ public class SmsService(
             logger.LogError(e, "Failed to send sms: {Message}", e.Message);
             throw new InternalServerException(e.Message);
         }
+    }
+
+    public async Task SendRetryMessageAsync(RetrySendSmsEvent message, TimeSpan delay)
+    {
+        await retryProducer.ProduceAsync(message, CancellationToken.None, delay);
     }
 
     public async Task SendApproveMessageAsync(Sms message)

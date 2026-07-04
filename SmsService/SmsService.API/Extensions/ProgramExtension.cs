@@ -1,3 +1,4 @@
+using SmsService.API.Options;
 using SmsService.Application.Interfaces.Services;
 using SmsService.Infrastructure.Options;
 using SmsService.Infrastructure.SmsRu;
@@ -8,6 +9,13 @@ public static class ProgramExtension
 {
     extension(IServiceCollection services)
     {
+        public IServiceCollection AddServiceOptions(IConfiguration configuration)
+        {
+            services.Configure<RetryOptions>(configuration.GetSection("RetryOptions"));
+
+            return services;
+        }
+        
         public IServiceCollection AddServices()
         {
             services.AddScoped<ISmsService, SmsService.Application.Services.SmsService>();

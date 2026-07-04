@@ -2,7 +2,7 @@
 
 NETWORK_NAME="notification-network"
 MOCK_FILE="Wiremock/compose.yaml"
-KAFKA_FILE="Kafka/compose.yaml"
+KAFKA_FILE="Brokers/compose.yaml"
 NOTIFICATION_SERVICE_FILE="NotificationService/compose.yaml"
 EMAIL_FILE="EmailService/compose.yaml"
 SMS_FILE="SmsService/compose.yaml"

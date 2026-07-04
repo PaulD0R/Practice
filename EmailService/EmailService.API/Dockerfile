@@ -7,6 +7,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Shared/NotificationSolution.MessageBroker.Abstraction/NotificationSolution.MessageBroker.Abstraction.csproj", "Shared/NotificationSolution.MessageBroker.Abstraction/"]
 COPY ["Shared/NotificationSolution.MessageBroker.Kafka/NotificationSolution.MessageBroker.Kafka.csproj", "Shared/NotificationSolution.MessageBroker.Kafka/"]
+COPY ["Shared/NotificationSolution.MessageBroker.Rabbit/NotificationSolution.MessageBroker.Rabbit.csproj", "Shared/NotificationSolution.MessageBroker.Rabbit/"]
 COPY ["EmailService/EmailService.API/EmailService.API.csproj", "EmailService/EmailService.API/"]
 COPY ["EmailService/EmailService.Infrastructure/EmailService.Infrastructure.csproj", "EmailService/EmailService.Infrastructure/"]
 COPY ["EmailService/EmailService.Application/EmailService.Application.csproj", "EmailService/EmailService.Application/"]

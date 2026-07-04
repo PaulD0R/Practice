@@ -1,5 +1,6 @@
 using EmailService.Application.Events;
 using EmailService.Application.Interfaces.Services;
+using EmailService.Application.Mappers;
 using NotificationSolution.MessageBroker.Abstraction;
 
 namespace EmailService.API.KafkaConsumers.Handlers;
@@ -17,7 +18,7 @@ public class SendEmailEventHandler(IServiceScopeFactory scopeFactory) : IMessage
         }
         catch(Exception e)
         {
-            await service.SendErrorMessageAsync(message.NotificationId, e.Message);
+            await service.SendRetryMessageAsync(message.ToRetrySendEmailEvent(), TimeSpan.FromSeconds(1));
         }
     }
 }

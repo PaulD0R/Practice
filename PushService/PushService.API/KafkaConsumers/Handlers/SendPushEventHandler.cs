@@ -1,6 +1,7 @@
 using NotificationSolution.MessageBroker.Abstraction;
 using PushService.Application.Events;
 using PushService.Application.Interfaces.Services;
+using PushService.Application.Mappers;
 
 namespace PushService.API.KafkaConsumers.Handlers;
 
@@ -17,7 +18,7 @@ public class SendPushEventHandler(IServiceScopeFactory scopeFactory) : IMessageH
         }
         catch (Exception e)
         {
-            await service.SendErrorMessageAsync(message.NotificationId, e.Message);
+            await service.SendRetryPushAsync(message.ToRetrySendPushEvent(), TimeSpan.FromSeconds(1));
         }
     }
 }

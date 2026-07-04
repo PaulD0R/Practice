@@ -12,6 +12,10 @@
 
       - SmsOptions__ApiId=api 
       - SmsOptions__Url=http://mock-notification-service:8080/notifications/sms
+
+      - Rabbit__RetrySendEvent__HostName=rabbitmq-notification
+      - Rabbit__RetrySendEvent__UserName=guest
+      - Rabbit__RetrySendEvent__Password=guest
     networks:
       - notification-network
     

@@ -12,6 +12,7 @@ public class PushService(
     IPushSender sender,
     IMessageProducer<ApprovePushEvent> approveProducer,
     IMessageProducer<ErrorPushEvent> errorProducer,
+    IMessageProducer<RetrySendPushEvent> retryProducer,
     ILogger<PushService> logeer)
     : IPushService
 {
@@ -28,6 +29,11 @@ public class PushService(
             logeer.LogError(e, "Error sending push message: {message}", e.Message);
             throw new InternalServerException("Error sending push message: " + e.Message);
         }
+    }
+
+    public async Task SendRetryPushAsync(RetrySendPushEvent message, TimeSpan delay)
+    {
+        await retryProducer.ProduceAsync(message, CancellationToken.None,  delay);
     }
 
     public async Task SendApproveMessageAsync(PushMessage message)

@@ -1,3 +1,4 @@
+using EmailService.API.Options;
 using EmailService.Application.Interfaces.Caching;
 using EmailService.Application.Interfaces.Providers;
 using EmailService.Application.Interfaces.Repositories;
@@ -29,6 +30,13 @@ public static class ProgramExtension
             return services;
         }
 
+        public IServiceCollection AddServiceOptions(IConfiguration configuration)
+        {
+            services.Configure<RetryOptions>(configuration.GetSection("RetryOptions"));
+            
+            return services;
+        }
+        
         public IServiceCollection AddServices()
         {
             services.AddScoped<ISmtpRepository, SmtpRepository>();
