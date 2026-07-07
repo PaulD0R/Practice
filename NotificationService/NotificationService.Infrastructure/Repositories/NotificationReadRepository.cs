@@ -11,7 +11,7 @@ public class NotificationReadRepository(ReadDbContext context) : INotificationRe
 {
     public async Task<IEnumerable<Notification>> GetNotificationsAsync(HelpNotificationDto helpNotification)
     {
-        var query = context.Notifications.AsQueryable();
+        var query = context.Notifications.AsQueryable().AsNoTracking();
         if (!string.IsNullOrWhiteSpace(helpNotification.Address))
             query = query.Where(n => n.Address == helpNotification.Address);
         
@@ -27,7 +27,7 @@ public class NotificationReadRepository(ReadDbContext context) : INotificationRe
 
     public async Task<Notification?> GetNotificationByIdAsync(Guid id)
     {
-        return await context.Notifications.FirstOrDefaultAsync(n => n.Id == id);
+        return await context.Notifications.AsNoTracking().FirstOrDefaultAsync(n => n.Id == id);
     }
 
     public async Task AddNotificationAsync(Notification notification)

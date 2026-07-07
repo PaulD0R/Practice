@@ -14,7 +14,12 @@ namespace NotificationService.API.Controllers;
 [Route("api/notifications")]
 public class NotificationController(IMediator mediator) : ControllerBase
 {
+    /// <summary>
+    /// Отправить новое уведомление.
+    /// </summary>
+    /// <param name="command">Данные для создания и отправки уведомления.</param>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> SendNotification([FromBody] AddNotificationCommand command)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -23,6 +28,10 @@ public class NotificationController(IMediator mediator) : ControllerBase
         return Created();
     }
 
+    /// <summary>
+    /// Получить список уведомлений.
+    /// </summary>
+    /// <param name="helpNotification">Параметры фильтрации.</param>
     [HttpGet]
     public async Task<IActionResult> GetNotifications([FromQuery] HelpNotificationDto helpNotification)
     {

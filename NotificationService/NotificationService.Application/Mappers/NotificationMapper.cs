@@ -45,7 +45,7 @@ public static class NotificationMapper
             new(notification.Id, notification.Address, notification.Text);
 
         public NotificationDto ToNotificationDto() =>
-            new(notification.Id, notification.Address, notification.Text, notification.Status);
+            new(notification.Id, notification.Address, notification.Text, notification.CreatedOn, notification.Status);
         
         public CreateNotificationEvent ToCreateNotificationEvent() =>
             new(notification.Id, notification.Address, notification.Text, notification.Status, notification.Channel, notification.CreatedOn);

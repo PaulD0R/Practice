@@ -49,7 +49,6 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseExceptionHandler();
 app.UseRouting();
 app.UseRateLimiter();
 app.UseAuthentication();
@@ -58,6 +57,7 @@ app.UseSerilogRequestLogging(options =>
 {
     options.MessageTemplate = "{RequestMethod} {RequestPath} responded {StatusCode}";
 });
+app.UseExceptionHandler();
 
 app.MapControllers();
 
