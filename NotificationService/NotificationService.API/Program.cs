@@ -9,6 +9,7 @@ using NotificationService.Application.Events.Push;
 using NotificationService.Application.Events.Sms;
 using NotificationService.Infrastructure.Kafka.Handlers;
 using NotificationSolution.MessageBroker.Kafka.Extensions;
+using Serilog;
 using ErrorEventHandler = NotificationService.Infrastructure.Kafka.Handlers.ErrorEventHandler;
 
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
@@ -41,6 +42,9 @@ builder.Services
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+builder.Host.UseSerilog((context, configuration) => 
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -50,6 +54,10 @@ app.UseRouting();
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate = "{RequestMethod} {RequestPath} responded {StatusCode}";
+});
 
 app.MapControllers();
 
